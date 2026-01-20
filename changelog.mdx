@@ -1,0 +1,103 @@
+---
+title: Changelog
+description: Track the latest updates, improvements, and new features released in Mosambee.
+---
+
+## Recent Releases
+
+Stay current with Mosambee's evolution. You receive new capabilities for monitoring, alerts, and analytics in each release. Review the highlights below to understand changes and plan your upgrades.
+
+<Update label="2024-10-15" description="v1.3.0" tags={["feature", "improvement"]}>
+
+## New Features
+
+- Added real-time collaboration on dashboards for teams
+- Introduced custom alert notifications via webhooks to `https://your-webhook-url.com/webhook`
+
+## Improvements
+
+- Enhanced query performance by 40% for large datasets
+- Updated UI with better mobile responsiveness
+
+## Bug Fixes
+
+- Fixed intermittent dashboard refresh issues
+- Resolved export failures for CSV reports over 10MB
+
+</Update>
+
+<Update label="2024-09-25" description="v1.2.1" tags={["bugfix", "security"]}>
+
+## Bug Fixes
+
+- Patched potential XSS vulnerability in metric labels
+- Corrected API rate limiting enforcement
+
+## Improvements
+
+- Optimized memory usage during long-running queries
+
+</Update>
+
+<Update label="2024-09-10" description="v1.2.0" tags={["feature", "breaking"]}>
+
+## New Features
+
+- Launched AI-powered anomaly detection
+- Added support for PostgreSQL data sources at `postgres://user:password@localhost:5432/dbname`
+
+## Breaking Changes
+
+- Updated authentication to require `YOUR_API_KEY` in all requests
+- Deprecated legacy query syntax; migrate to new format
+
+</Update>
+
+## Upgrading to the Latest Version
+
+Upgrade Mosambee effortlessly to access the newest features and security patches. Follow these steps to update your integration.
+
+<Callout kind="info">
+  Backup your configuration before upgrading. Test in a staging environment first.
+</Callout>
+
+<Steps>
+  <Step title="Check Current Version" icon="package">
+    Run the version check command in your terminal.
+  </Step>
+  <Step title="Install Update" icon="download">
+    Use your preferred package manager.
+
+    <CodeGroup tabs="npm,yarn">
+````bash
+npm install mosambee@latest
+````
+````bash
+yarn add mosambee@latest
+````
+    </CodeGroup>
+  </Step>
+  <Step title="Restart Service" icon="refresh-cw">
+    Restart your Mosambee instance and verify endpoints like `https://api.example.com/metrics`.
+  </Step>
+</Steps>
+
+## Upcoming Features
+
+Preview what's next for Mosambee. These enhancements focus on automation and deeper insights.
+
+<Columns cols={2}>
+  <Card title="AI Insights" icon="zap" horizontal>
+    Automated root cause analysis for alerts.
+  </Card>
+  <Card title="Multi-Cloud Support" icon="cloud" horizontal>
+    Seamless integration with AWS, GCP, and Azure.
+  </Card>
+  <Card title="Advanced Export" icon="download" horizontal>
+    Scheduled PDF and Excel reports.
+  </Card>
+</Columns>
+
+<Callout kind="tip">
+  Join the Mosambee Discord or subscribe to the newsletter at `https://dashboard.example.com/subscribe` for beta access and early previews.
+</Callout>

@@ -1,0 +1,166 @@
+---
+title: Integrations and Extensions
+description: Connect Mosambee with third-party tools and services to enhance your HR and payroll processes seamlessly.
+---
+
+## Overview
+
+Mosambee supports seamless integrations with popular third-party tools, allowing you to automate HR workflows, sync payroll data, and extend functionality without custom development. Use built-in webhooks, Zapier, or direct API connections to connect with services like Slack, Google Workspace, and accounting software.
+
+<Callout kind="info">
+  All integrations use secure HTTPS endpoints and support HMAC signature verification for payloads.
+</Callout>
+
+## Supported Integrations
+
+Explore ready-to-use integrations that streamline your HR and payroll operations.
+
+<Columns cols={3}>
+  <Card title="Slack" icon="message-circle" href="https://slack.com">
+    Send real-time notifications for payroll approvals, new hires, and time-off requests.
+  </Card>
+  <Card title="Zapier" icon="zap" href="https://zapier.com">
+    No-code automation with 5000+ apps including Trello, Airtable, and Google Sheets.
+  </Card>
+  <Card title="Google Workspace" icon="google" href="https://workspace.google.com">
+    Sync employee data with Google Sheets and Calendar for seamless onboarding.
+  </Card>
+  <Card title="QuickBooks" icon="dollar-sign" href="https://quickbooks.intuit.com">
+    Automate payroll exports to your accounting system.
+  </Card>
+  <Card title="BambooHR" icon="users" href="https://bamboohr.com">
+    Bidirectional sync for employee records and benefits.
+  </Card>
+  <Card title="Custom Webhooks" icon="plug" href="#webhooks">
+    Build tailored integrations with event-driven payloads.
+  </Card>
+</Columns>
+
+## Setting Up API Webhooks
+
+Configure webhooks in your Mosambee dashboard to receive real-time event data, such as `employee.created` or `payroll.approved`.
+
+<Steps>
+  <Step title="Navigate to Integrations" icon="settings">
+    Log in to `https://dashboard.mosambee.com` and go to **Settings > Integrations > Webhooks**.
+  </Step>
+  <Step title="Add Webhook URL" icon="plus">
+    Enter your endpoint URL, e.g., `https://your-webhook-url.com/mosambee`.
+    
+    Select events like **Payroll Processed** or **Employee Updated**.
+  </Step>
+  <Step title="Configure Signature" icon="shield">
+    Enable HMAC verification and copy your secret key.
+  </Step>
+  <Step title="Test Webhook" icon="play">
+    Trigger a test event and verify receipt.
+  </Step>
+</Steps>
+
+### Webhook Payload Example
+
+Webhooks deliver JSON payloads with event details.
+
+<CodeGroup tabs="JavaScript,Python">
+  ```javascript
+  // Verify HMAC signature
+  const crypto = require('crypto');
+  const signature = 'sha256=' + crypto.createHmac('sha256', 'YOUR_WEBHOOK_SECRET')
+    .update(payload)
+    .digest('hex');
+  ```
+  ```python
+  import hmac
+  import hashlib
+  signature = 'sha256=' + hmac.new(
+    b'YOUR_WEBHOOK_SECRET',
+    payload,
+    hashlib.sha256
+  ).hexdigest()
+  ```
+</CodeGroup>
+
+Use these `<ParamField>` components for key payload fields:
+
+<ParamField path="event" param-type="string" required="true">
+  Event type, e.g., `payroll.processed`.
+</ParamField>
+
+<ParamField path="data.employeeId" param-type="string" required="true">
+  Unique employee identifier.
+</ParamField>
+
+<ParamField path="data.amount" param-type="number">
+  Payroll amount in cents.
+</ParamField>
+
+## Common Integration Examples
+
+Follow these platform-specific guides to implement popular workflows.
+
+<Tabs>
+  <Tab title="Slack Notifications" icon="message-circle">
+    Post payroll summaries to a Slack channel on approval.
+    
+    <Request tabs="JavaScript,cURL">
+      ```javascript
+      await fetch('https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: `Payroll approved for ${employee.name}: $${amount / 100}`
+        })
+      });
+      ```
+      ```bash
+      curl -X POST https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK \
+        -H "Content-Type: application/json" \
+        -d '{"text": "Payroll approved: $5000"}'
+      ```
+    </Request>
+  </Tab>
+  <Tab title="Google Sheets Sync" icon="file-spreadsheet">
+    Append new employee data to a Sheet.
+    
+    ```javascript
+    // Use Google Sheets API
+    await gapi.client.sheets.spreadsheets.values.append({
+      spreadsheetId: 'YOUR_SHEET_ID',
+      range: 'Employees!A:C',
+      valueInputOption: 'RAW',
+      resource: {
+        values: [[employee.id, employee.name, employee.email]]
+      }
+    });
+    ```
+  </Tab>
+  <Tab title="Zapier Workflow" icon="zap">
+    Create a Zap: Mosambee **New Payroll** → Zapier → Update QuickBooks.
+    
+    No code required—select the trigger in Zapier and map fields like `employeeId` and `amount`.
+  </Tab>
+</Tabs>
+
+## Troubleshooting Connection Issues
+
+<ExpandableGroup>
+  <Expandable title="Webhook Not Receiving Events" default-open="true">
+    - Verify your endpoint responds with `200 OK` within 5 seconds.
+    - Check firewall rules block non-HTTPS traffic.
+    - Review Mosambee dashboard logs for delivery failures.
+    
+    <Callout kind="tip">
+      Retry failed deliveries manually from the dashboard.
+    </Callout>
+  </Expandable>
+  <Expandable title="Signature Verification Fails">
+    Ensure you use the exact secret key without extra whitespace. Test with the sample code above.
+  </Expandable>
+  <Expandable title="Rate Limiting Errors">
+    Mosambee limits webhooks to 100/minute per endpoint. Implement exponential backoff in your handler.
+  </Expandable>
+</ExpandableGroup>
+
+<Callout kind="success">
+  Successfully integrated? Explore advanced API features in our [API Reference](/api-reference).
+</Callout>
